@@ -312,7 +312,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
       return; 
     }
     if (simulateError) { 
-      setClaimMessage(`Cannot claim (Simulate Err): ${simulateError.shortMessage || simulateError.message}`); 
+      setClaimMessage(`Cannot claim (Simulate Err): ${simulateError.message}`);
       return; 
     }
     if (!simulateData?.request) { 
