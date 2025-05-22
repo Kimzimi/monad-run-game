@@ -16,7 +16,7 @@
       "subtitle": "Run, jump, and earn MON!",
       "description": "Play the classic Dino Run game on Monad Testnet! Achieve a high score and claim MON rewards via Farcaster Frames.",
       "screenshotUrls": [
-        "https://monadrunv1.netlify.app/screenshots/screen1.png"
+        "https://monadrunv1.netlify.app/screenshots/screen1.png" 
       ],
       "primaryCategory": "games",
       "tags": ["monad", "game", "dino", "run", "frame", "p2e"],
