@@ -96,11 +96,21 @@ export default function DinoGamePage() {
   const isPlayingRef = useRef(isPlaying);
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
 
-  const { address: userAddress, isConnected } = useAccount(); // chain ถูกลบออกไปเพราะ currentChainId จะใช้แทน
-  const { connect, connectors, error: connectError, isLoading: isConnecting } = useConnect();
-  const { disconnect } = useDisconnect();
-  const currentChainId = useChainId(); 
-  const { switchChain, isLoading: isSwitchingChain, error: switchChainError } = useSwitchChain(); 
+  // src/app/play-dino/page.tsx
+
+// ... (โค้ดอื่นๆ) ...
+
+// บรรทัด 99
+const { address: userAddress, isConnected } = useAccount();
+// บรรทัด 100 (แก้ไข)
+const { connect, connectors, error: connectError, status: connectStatus, pendingConnector } = useConnect();
+const isConnecting = connectStatus === 'pending'; // หรือดูจาก pendingConnector
+// บรรทัด 101
+const { disconnect } = useDisconnect();
+// บรรทัด 102
+const currentChainId = useChainId();
+// บรรทัด 103 (แก้ไข)
+const { switchChain, isPending: isSwitchingChain, error: switchChainError } = useSwitchChain();
 
   const fidToClaim = useRef<number>(12345);
   useEffect(() => {
