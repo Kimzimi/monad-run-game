@@ -278,7 +278,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
     }
   }, [simulateData, simulateError, showClaimPopup, canClaimReward, currentScore, claimMessage]);
 
-  const { writeContractAsync, data: writeContractData, isLoading: isWriteContractLoading, error: writeContractError } = useWriteContract();
+  const { writeContractAsync, data: writeContractData, isPending: isWriteContractLoading, error: writeContractError, status: writeContractStatus } = useWriteContract();
   const { isLoading: isTransactionLoading, isSuccess: isTransactionSuccess, isError: isTransactionError, data: transactionReceipt } = useWaitForTransactionReceipt({
     hash: writeContractData, confirmations: 1,
   });
