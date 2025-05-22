@@ -1,16 +1,13 @@
 // src/app/api/frame/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-// URL เต็มของหน้าเกม Monad Run ของคุณที่ Deploy บน Vercel
-const GAME_PAGE_URL = "https://monad-run-game-v3-7d75cfw00-kimzimis-projects.vercel.app/play-dino";
+// URL เต็มของหน้าเกม Monad Run ของคุณที่ Deploy บน Vercel (ใช้ Domain ใหม่)
+const GAME_PAGE_URL = "https://monad-run-game-v3.vercel.app/play-dino";
 
 // URL รูปภาพหน้าปก Frame (จาก Imageshack ที่คุณให้มา)
 const FRAME_COVER_IMAGE_URL = "https://imagizer.imageshack.com/img924/162/3FDjSU.png"; 
 
 const generateFrameHtml = (): string => {
-  // เนื่องจาก GAME_PAGE_URL และ FRAME_COVER_IMAGE_URL ถูกตั้งค่าเป็น URL จริงแล้ว
-  // เงื่อนไข if ก่อนหน้านี้จึงไม่จำเป็นอีกต่อไป
-  
   return `
     <!DOCTYPE html><html><head>
       <meta charSet="utf-8" />
