@@ -103,7 +103,7 @@ export default function DinoGamePage() {
 // บรรทัด 99
 const { address: userAddress, isConnected } = useAccount();
 // บรรทัด 100 (แก้ไข)
-const { connect, connectors, error: connectError, status: connectStatus, pendingConnector } = useConnect();
+const { connect, connectors, error: connectError, status: connectStatus } = useConnect();
 const isConnecting = connectStatus === 'pending'; // หรือดูจาก pendingConnector
 // บรรทัด 101
 const { disconnect } = useDisconnect();
