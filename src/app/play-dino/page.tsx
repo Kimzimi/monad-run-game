@@ -423,7 +423,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
             {claimMessage}
           </p>
         )}
-        {switchChainError && <p className="text-xs text-red-500 mt-1">Switch Network Error: {switchChainError.shortMessage}</p>}
+        {switchChainError && <p className="text-xs text-red-500 mt-1">Switch Network Error: {switchChainError.message}</p>}
         {claimTxHash && (
              <p className="text-xs mt-1 mb-2">
                 <a
