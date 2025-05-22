@@ -1,8 +1,6 @@
-// src/app/play-dino/page.tsx
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-// --- อัปเดต Imports สำหรับ Wagmi v2 ---
 import { 
     useAccount, 
     useConnect, 
@@ -13,11 +11,9 @@ import {
     useChainId, 
     useSwitchChain 
 } from 'wagmi';
-//import { InjectedConnector } from 'wagmi/connectors/injected';
 import { DINO_REWARD_CONTRACT_ADDRESS, DINO_REWARD_CONTRACT_ABI } from '../../lib/contracts';
 import { monadTestnet } from '../../lib/wagmiConfig'; 
 
-// --- Game Constants (จากโค้ดที่คุณให้มา) ---
 const GAME_AREA_WIDTH = 600;
 const GAME_AREA_HEIGHT = 250;
 const DINO_IMAGE_DISPLAY_WIDTH = 70;
@@ -58,7 +54,6 @@ type ObstacleType = typeof OBSTACLE_TYPES[keyof typeof OBSTACLE_TYPES];
 interface Obstacle {
   element: HTMLDivElement; x: number; y: number; type: ObstacleType; height: number; width: number;
 }
-// --- สิ้นสุด Game Constants ---
 
 const MIN_SCORE_FOR_REWARD = 100;
 const REWARD_AMOUNT_DISPLAY = "0.1 MON";
@@ -73,15 +68,12 @@ export default function DinoGamePage() {
   const [currentScore, setCurrentScore] = useState(0);
   const [isCrouching, setIsCrouching] = useState(false);
 
-  // --- State สำหรับการ Claim รางวัล และ Popup ---
   const [canClaimReward, setCanClaimReward] = useState(false);
   const [hasClaimedThisSession, setHasClaimedThisSession] = useState(false);
   const [claimMessage, setClaimMessage] = useState<string | null>(null);
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimTxHash, setClaimTxHash] = useState<`0x${string}` | null>(null);
-  const [showClaimPopup, setShowClaimPopup] = useState(false); // <<! State สำหรับควบคุม Popup
-  // --- สิ้นสุด State รางวัล ---
-
+  const [showClaimPopup, setShowClaimPopup] = useState(false);
 
   const dinoYRef = useRef(DINO_BOTTOM_Y);
   const dinoVelocityYRef = useRef(0);
@@ -96,21 +88,12 @@ export default function DinoGamePage() {
   const isPlayingRef = useRef(isPlaying);
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
 
-  // src/app/play-dino/page.tsx
-
-// ... (โค้ดอื่นๆ) ...
-
-// บรรทัด 99
-const { address: userAddress, isConnected } = useAccount();
-// บรรทัด 100 (แก้ไข)
-const { connect, connectors, error: connectError, status: connectStatus,  } = useConnect();
-const isConnecting = connectStatus === 'pending'; // หรือดูจาก pendingConnector
-// บรรทัด 101
-const { disconnect } = useDisconnect();
-// บรรทัด 102
-const currentChainId = useChainId();
-// บรรทัด 103 (แก้ไข)
-const { switchChain, isPending: isSwitchingChain, error: switchChainError } = useSwitchChain();
+  const { address: userAddress, isConnected } = useAccount();
+  const { connect, connectors, error: connectError, status: connectStatus } = useConnect();
+  const isConnecting = connectStatus === 'pending';
+  const { disconnect } = useDisconnect();
+  const currentChainId = useChainId();
+  const { switchChain, isPending: isSwitchingChain, error: switchChainError } = useSwitchChain();
 
   const fidToClaim = useRef<number>(12345);
   useEffect(() => {
@@ -118,8 +101,10 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
       try {
         const lastFourHex = userAddress.slice(-4);
         fidToClaim.current = parseInt(lastFourHex, 16) || 12345;
+      } catch (_e) { 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_e) { fidToClaim.current = 12345; }
+        fidToClaim.current = 12345; 
+      }
     } else {
       fidToClaim.current = 12345;
     }
@@ -257,8 +242,11 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
     isLoading: isSimulatingContractWrite, 
     refetch: refetchSimulateContractWrite 
   } = useSimulateContract({
-    address: DINO_REWARD_CONTRACT_ADDRESS, abi: DINO_REWARD_CONTRACT_ABI, functionName: 'claimReward',
-    args: argsForClaim, query: { enabled: isEligibleToSimulate },
+    address: DINO_REWARD_CONTRACT_ADDRESS, 
+    abi: DINO_REWARD_CONTRACT_ABI, 
+    functionName: 'claimReward',
+    args: argsForClaim, 
+    query: { enabled: isEligibleToSimulate },
   });
 
   useEffect(() => {
@@ -280,26 +268,32 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
 
   const { writeContractAsync, data: writeContractData, isPending: isWriteContractLoading, error: writeContractError } = useWriteContract();
   const { isLoading: isTransactionLoading, isSuccess: isTransactionSuccess, isError: isTransactionError, data: transactionReceipt } = useWaitForTransactionReceipt({
-    hash: writeContractData, confirmations: 1,
+    hash: writeContractData, 
+    confirmations: 1,
   });
 
   useEffect(() => {
     const conditionsMet = isConnected && canClaimReward && !hasClaimedThisSession && currentScore >= MIN_SCORE_FOR_REWARD && showClaimPopup;
     if (conditionsMet) {
-      refetchSimulateContractWrite?.();
+      if (typeof refetchSimulateContractWrite === 'function') {
+        refetchSimulateContractWrite();
+      }
     }
   }, [isConnected, canClaimReward, hasClaimedThisSession, currentScore, showClaimPopup, refetchSimulateContractWrite]);
 
   const handleClaimReward = async () => {
     if (!isConnected) { 
-      if (connectors[0]) connect({ connector: connectors[0] }); 
-      else alert("Install Wallet."); 
+      if (connectors && connectors.length > 0 && connectors[0]) {
+        connect({ connector: connectors[0] }); 
+      } else {
+        alert("Wallet not found or not ready. Please install a compatible wallet (e.g., MetaMask).");
+      }
       return; 
     }
 
-    if (currentChainId !== monadTestnet.id) { // <<! ตรวจสอบ Chain ID ก่อน
+    if (currentChainId !== monadTestnet.id) {
         setClaimMessage(`Wrong network! Please switch to Monad Testnet (ID: ${monadTestnet.id}). Your current network ID: ${currentChainId}`);
-        if (switchChain) {
+        if (typeof switchChain === 'function') {
             switchChain({ chainId: monadTestnet.id });
         } else {
             alert(`Please switch your wallet to Monad Testnet (ID: ${monadTestnet.id}) to claim.`);
@@ -316,12 +310,14 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
       return; 
     }
     if (!simulateData?.request) { 
-      setClaimMessage("Claim not ready. Simulation failed. Try again."); 
-      if (!isSimulatingContractWrite) refetchSimulateContractWrite?.(); 
+      setClaimMessage("Claim not ready. Simulation failed. Please try closing and reopening the claim popup or ensure your score is high enough."); 
+      if (!isSimulatingContractWrite && typeof refetchSimulateContractWrite === 'function') {
+        refetchSimulateContractWrite();
+      }
       return; 
     }
-    if (!writeContractAsync) { 
-      setClaimMessage("Claim function not available."); 
+    if (typeof writeContractAsync !== 'function') { 
+      setClaimMessage("Claim function not available. Please refresh."); 
       return; 
     }
 
@@ -329,11 +325,13 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
     try {
       const hash = await writeContractAsync(simulateData.request);
       if (hash) { setClaimTxHash(hash); setClaimMessage("Transaction sent! Waiting..."); }
-      else { setClaimMessage("Tx sent but no hash returned."); setIsClaiming(false); }
+      else { setClaimMessage("Tx sent but no hash returned. Please check your wallet."); setIsClaiming(false); }
     } 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    catch (err: any) { 
-      console.error("Call writeCRAsync Err:", err); setClaimMessage(`Claim Init Err: ${err.shortMessage || err.message}`); setIsClaiming(false);
+    catch (err) { 
+      console.error("Call writeContractAsync Err:", err);
+      const error = err as Error & { shortMessage?: string }; // Type assertion
+      setClaimMessage(`Claim Init Err: ${error.message}`); 
+      setIsClaiming(false);
     }
   };
 
@@ -345,7 +343,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
     }
     if (isTransactionError && claimTxHash) {
       if (!claimMessage?.toLowerCase().includes("fail") && !claimMessage?.toLowerCase().includes("err")) {
-          setClaimMessage(`Claim failed for Tx: ${claimTxHash.substring(0,10)}...`);
+          setClaimMessage(`Claim failed for Tx: ${claimTxHash.substring(0,10)}... Check transaction on explorer.`);
       }
       setIsClaiming(false);
     }
@@ -412,7 +410,6 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
   useEffect(() => { if (!isPlaying) clearAllIntervalsAndTimers(); }, [isPlaying, clearAllIntervalsAndTimers]);
   useEffect(() => { return () => clearAllIntervalsAndTimers(); }, [clearAllIntervalsAndTimers]);
 
-  // --- JSX สำหรับ Claim Popup Component ---
   const ClaimPopup = () => (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-800 p-6 rounded-lg shadow-xl text-white w-full max-w-md text-center">
@@ -423,7 +420,9 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
             {claimMessage}
           </p>
         )}
-        {switchChainError && <p className="text-xs text-red-500 mt-1">Switch Network Error: {switchChainError.message}</p>}
+        {connectError && <p className="text-xs text-red-400 mt-1">Connection Error: {connectError.message}</p>}
+        {switchChainError && <p className="text-xs text-red-400 mt-1">Switch Network Error: {switchChainError.message}</p>}
+        {writeContractError && <p className="text-xs text-red-400 mt-1">Claim Submission Error: {writeContractError.message}</p>}
         {claimTxHash && (
              <p className="text-xs mt-1 mb-2">
                 <a
@@ -439,7 +438,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
         {!hasClaimedThisSession ? (
           <button
             onClick={handleClaimReward}
-            disabled={isClaiming || !simulateData?.request || isSimulatingContractWrite || !isConnected || isTransactionSuccess || (isConnected && currentChainId !== monadTestnet.id && !switchChain) }
+            disabled={isClaiming || !simulateData?.request || isSimulatingContractWrite || !isConnected || isTransactionSuccess || (isConnected && currentChainId !== monadTestnet.id && typeof switchChain !== 'function') }
             className="w-full mb-2 px-6 py-3 bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-semibold rounded-lg shadow text-base"
           >
             {isSwitchingChain && currentChainId !== monadTestnet.id ? 'Switching Network...' : (isClaiming || isWriteContractLoading || isTransactionLoading || isSimulatingContractWrite ? 'Processing...' : `Claim ${REWARD_AMOUNT_DISPLAY}!`)}
@@ -448,7 +447,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
             <p className="text-green-400 mb-2 text-sm">Reward already processed!</p>
         )}
         {isConnected && currentChainId !== monadTestnet.id && canClaimReward && !hasClaimedThisSession && (
-            <button onClick={() => switchChain?.({ chainId: monadTestnet.id })} disabled={isSwitchingChain} className="w-full mt-2 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow">
+            <button onClick={() => { if (typeof switchChain === 'function') switchChain({ chainId: monadTestnet.id });}} disabled={isSwitchingChain || typeof switchChain !== 'function'} className="w-full mt-2 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow">
                 {isSwitchingChain ? 'Switching...' : 'Switch to Monad Testnet'}
             </button>
         )}
@@ -465,7 +464,6 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
       </div>
     </div>
   );
-  // --- สิ้นสุด JSX สำหรับ Claim Popup Component ---
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 text-gray-800 outline-none" tabIndex={0}>
@@ -473,7 +471,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
         {isConnected ? (
           <div className="flex items-center space-x-2 bg-gray-700 text-white p-2 rounded-lg shadow">
             <span className="text-xs">{`${userAddress?.substring(0, 6)}...${userAddress?.substring(userAddress.length - 4)}`}</span>
-            <button onClick={() => disconnect()} className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs">Disconnect</button>
+            <button onClick={() => { if (typeof disconnect === 'function') disconnect(); }} className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs">Disconnect</button>
           </div>
         ) : (
           <button
@@ -484,7 +482,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
             {isConnecting ? 'Connecting...' : 'Connect Wallet'}
           </button>
         )}
-        {connectError && <p className="text-xs text-red-500 mt-1">{connectError.shortMessage || connectError.message}</p>}
+        {connectError && <p className="text-xs text-red-500 mt-1">Connection Error: {connectError.message}</p>}
       </div>
 
       <h1 className="text-3xl sm:text-4xl font-bold text-center text-blue-600 mb-6">Monad Run</h1>
