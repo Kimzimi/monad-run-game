@@ -19,7 +19,10 @@
         "https://monadrunv1.netlify.app/screenshots/screen1.png"
       ],
       "primaryCategory": "games",
-      "tags": ["monad", "game", "dino", "run", "frame", "playtoearn"],
-      "requiredChains": ["eip155:10143"] 
+      "tags": ["monad", "game", "dino", "run", "frame", "p2e"],
+      "requiredChains": ["eip155:10143"],
+      "ogTitle": "Monad Run Game",
+      "ogDescription": "Play the classic Dino Run game on Monad Testnet and earn rewards!",
+      "ogImageUrl": "https://imagizer.imageshack.com/img924/162/3FDjSU.png"
     }
   }
