@@ -1,10 +1,14 @@
-import { DINO_REWARD_CONTRACT_ADDRESS, DINO_REWARD_CONTRACT_ABI } from '@/lib/contracts';
+import {
+    DINO_REWARD_CONTRACT_ADDRESS as CentralContractAddress,
+    DINO_REWARD_CONTRACT_ABI as CentralContractAbi
+} from '@/lib/contracts';
 
-console.log('Contract Address loaded in frontend/src/index.ts:', DINO_REWARD_CONTRACT_ADDRESS);
-console.log('Contract ABI loaded status in frontend/src/index.ts:', DINO_REWARD_CONTRACT_ABI && DINO_REWARD_CONTRACT_ABI.length > 0 ? "ABI Loaded" : "ABI not loaded or empty");
+export const DINO_REWARD_CONTRACT_ADDRESS = CentralContractAddress;
+export const DINO_REWARD_CONTRACT_ABI = CentralContractAbi;
 
-// หากไฟล์นี้มีโค้ดอื่นๆ ที่ใช้เริ่มต้นการทำงานของส่วน frontend
-// หรือมีการ import CSS, เรียกใช้งาน React components หลัก ฯลฯ
-// ให้คงโค้ดเหล่านั้นไว้ หรือเพิ่มเติมเข้ามาตามความจำเป็น
+console.log("Contract data processed in frontend/src/index.ts (imported from @/lib/contracts)");
+console.log("DinoRewardContract Address (via frontend/src/index.ts):", DINO_REWARD_CONTRACT_ADDRESS);
 
-export {};
+if (typeof DINO_REWARD_CONTRACT_ADDRESS === 'undefined' || !DINO_REWARD_CONTRACT_ABI || DINO_REWARD_CONTRACT_ABI.length === 0) {
+    console.error("CRITICAL ERROR in frontend/src/index.ts: Imported Contract Address or ABI is undefined or empty!");
+}
