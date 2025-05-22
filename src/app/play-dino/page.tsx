@@ -103,7 +103,7 @@ export default function DinoGamePage() {
 // บรรทัด 99
 const { address: userAddress, isConnected } = useAccount();
 // บรรทัด 100 (แก้ไข)
-const { connect, connectors, error: connectError, status: connectStatus } = useConnect();
+const { connect, connectors, error: connectError, status: connectStatus,  } = useConnect();
 const isConnecting = connectStatus === 'pending'; // หรือดูจาก pendingConnector
 // บรรทัด 101
 const { disconnect } = useDisconnect();
@@ -265,7 +265,7 @@ const { switchChain, isPending: isSwitchingChain, error: switchChainError } = us
     if (showClaimPopup) {
         if (simulateError) {
           console.error('[SimulateContract Error Hook - Popup Visible]:', simulateError);
-          setClaimMessage(`Error preparing claim: ${simulateError.shortMessage || simulateError.message}`);
+          setClaimMessage(`Error preparing claim: ${simulateError.message}`);
         }
         if (simulateData) {
             console.log('[SimulateContract Data Hook - Popup Visible]: Request prepared ->', simulateData.request ? 'YES' : 'NO', simulateData);
