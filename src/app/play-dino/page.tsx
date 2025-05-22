@@ -13,7 +13,7 @@ import {
     useChainId, 
     useSwitchChain 
 } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+//import { InjectedConnector } from 'wagmi/connectors/injected';
 import { DINO_REWARD_CONTRACT_ADDRESS, DINO_REWARD_CONTRACT_ABI } from '../../lib/contracts';
 import { monadTestnet } from '../../lib/wagmiConfig'; 
 
@@ -108,7 +108,7 @@ export default function DinoGamePage() {
       try {
         const lastFourHex = userAddress.slice(-4);
         fidToClaim.current = parseInt(lastFourHex, 16) || 12345;
-      } catch (e) { fidToClaim.current = 12345; }
+      } catch (_e) { fidToClaim.current = 12345; }
     } else {
       fidToClaim.current = 12345;
     }
@@ -189,7 +189,7 @@ export default function DinoGamePage() {
       }
       if (o.x < -o.width) { o.element.remove(); obstaclesRef.current.splice(i, 1); }
     }
-  }, [isCrouching, gameOver, GRAVITY]);
+  }, [isCrouching, gameOver]);
 
   const startGame = useCallback(() => {
     if (!dinoContainerRef.current || !gameOverMessageRef.current || !gameAreaRef.current || !dinoImageElementRef.current) {
@@ -224,7 +224,7 @@ export default function DinoGamePage() {
     if (Math.abs(dinoYRef.current - DINO_BOTTOM_Y) < 1) {
       dinoVelocityYRef.current = JUMP_STRENGTH;
     }
-  }, [isCrouching, JUMP_STRENGTH]);
+  }, [isCrouching]);
 
   const crouch = useCallback((shouldCrouch: boolean) => {
     if (!isPlayingRef.current) return;
@@ -319,7 +319,9 @@ export default function DinoGamePage() {
       const hash = await writeContractAsync(simulateData.request);
       if (hash) { setClaimTxHash(hash); setClaimMessage("Transaction sent! Waiting..."); }
       else { setClaimMessage("Tx sent but no hash returned."); setIsClaiming(false); }
-    } catch (err: any) {
+    } 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (err: any) { 
       console.error("Call writeCRAsync Err:", err); setClaimMessage(`Claim Init Err: ${err.shortMessage || err.message}`); setIsClaiming(false);
     }
   };
