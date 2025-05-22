@@ -1,31 +1,54 @@
-// ตัวอย่างใน src/app/page.tsx (หรือ src/app/play-dino/page.tsx ถ้า homeUrl ชี้ไปที่นั่น)
-import type { Metadata } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-const appUrl = process.env.NEXT_PUBLIC_URL || "https://monadrunv1.netlify.app"; // Fallback
-const gamePagePath = "/play-dino"; // Path ไปยังหน้าเกมจริง
-const frameImageUrl = "https://imagizer.imageshack.com/img924/162/3FDjSU.png"; // หรือใช้รูปจาก public folder เช่น `${appUrl}/images/frame-image.png`
+const GAME_PAGE_URL = "https://monadrunv1.netlify.app/play-dino";
+const FRAME_COVER_IMAGE_URL = "https://imagizer.imageshack.com/img924/162/3FDjSU.png"; 
 
-export const metadata: Metadata = {
-  // ... (Open Graph tags อื่นๆ)
-  other: {
-    "fc:frame": "vNext",
-    "fc:frame:image": frameImageUrl,
-    "fc:frame:image:aspect_ratio": "1.91:1",
-    "fc:frame:button:1": "🦖 Play Monad Run!",
-    "fc:frame:button:1:action": "link",
-    "fc:frame:button:1:target": `<span class="math-inline">\{appUrl\}</span>{gamePagePath}`,
-    // ถ้ามี post_url ก็ใส่ที่นี่
-    // "fc:frame:post_url": `${appUrl}/api/frame-action`, // ตัวอย่าง
-  },
+const generateFrameHtml = (): string => {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="Monad Run - Play and Earn MON!" />
+        <meta property="og:image" content="${FRAME_COVER_IMAGE_URL}" />
+        <meta property="og:type" content="website" /> 
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="${FRAME_COVER_IMAGE_URL}" />
+        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" /> 
+        <meta property="fc:frame:button:1" content="🦖 Play Monad Run!" />
+        <meta property="fc:frame:button:1:action" content="link" /> 
+        <meta property="fc:frame:button:1:target" content="${GAME_PAGE_URL}" />
+        <title>Monad Run Launcher Frame</title>
+      </head>
+      <body>
+        <h1>Monad Run Farcaster Frame</h1>
+        <p>If you are not redirected, <a href="${GAME_PAGE_URL}">click here to play Monad Run!</a></p>
+        <p>Frame Image URL: ${FRAME_COVER_IMAGE_URL}</p>
+      </body>
+    </html>
+  `;
 };
 
-export default function YourPage() {
-  // เนื้อหาของหน้าเว็บคุณ (เช่น หน้า Landing Page หรือหน้าเกมโดยตรง)
-  return (
-    <div>
-      <h1>Welcome to Monad Run Game!</h1>
-      <p>This page can also be a Farcaster Frame.</p>
-      {/* หรือถ้า homeUrl คือหน้าเกม ก็เป็นโค้ดเกมของคุณ */}
-    </div>
-  );
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_req: NextRequest): Promise<Response> {
+  const html = generateFrameHtml();
+  return new NextResponse(html, { 
+    status: 200, 
+    headers: { 
+      'Content-Type': 'text/html', 
+      'Cache-Control': 'public, max-age=60, s-maxage=60'
+    }
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function POST(_req: NextRequest): Promise<Response> {
+  const html = generateFrameHtml(); 
+  return new NextResponse(html, { 
+    status: 200, 
+    headers: { 
+      'Content-Type': 'text/html',
+    }
+  });
 }
