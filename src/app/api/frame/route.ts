@@ -7,14 +7,9 @@ const GAME_PAGE_URL = "https://monad-run-game-v3-7d75cfw00-kimzimis-projects.ver
 // URL รูปภาพหน้าปก Frame (จาก Imageshack ที่คุณให้มา)
 const FRAME_COVER_IMAGE_URL = "https://imagizer.imageshack.com/img924/162/3FDjSU.png"; 
 
-
 const generateFrameHtml = (): string => {
-  // ไม่จำเป็นต้องเช็ค YOUR_FRAME_COVER_IMAGE_URL_HERE อีกต่อไป เพราะเราใส่ URL จริงแล้ว
-  // แต่ GAME_PAGE_URL ยังควรตรวจสอบ (เผื่อมีการเปลี่ยนแปลงในอนาคต)
-  if (GAME_PAGE_URL === "YOUR_DEPLOYED_GAME_PAGE_URL_HERE") { // ตรวจสอบเผื่อกรณีนี้ยังไม่ได้ถูกแก้ไข
-    console.error("ERROR: GAME_PAGE_URL has not been set correctly in src/app/api/frame/route.ts.");
-    return `<!DOCTYPE html><html><head><title>Configuration Error</title><meta property="fc:frame" content="vNext" /><meta property="fc:frame:image" content="https://placehold.co/800x418/orange/white?text=Error:+Game+URL+Needed" /><meta property="fc:frame:button:1" content="Error" /></head><body>Configuration Error: Please set the GAME_PAGE_URL.</body></html>`;
-  }
+  // เนื่องจาก GAME_PAGE_URL และ FRAME_COVER_IMAGE_URL ถูกตั้งค่าเป็น URL จริงแล้ว
+  // เงื่อนไข if ก่อนหน้านี้จึงไม่จำเป็นอีกต่อไป
   
   return `
     <!DOCTYPE html><html><head>
