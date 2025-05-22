@@ -1,19 +1,21 @@
 // src/app/api/frame/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
+// URL เต็มของหน้าเกม Monad Run ของคุณที่ Deploy บน Vercel
 const GAME_PAGE_URL = "https://monad-run-game-v3-7d75cfw00-kimzimis-projects.vercel.app/play-dino";
 
-// <<! สำคัญมาก: แก้ไข YOUR_FRAME_COVER_IMAGE_URL_HERE !>>
-const FRAME_COVER_IMAGE_URL = "YOUR_FRAME_COVER_IMAGE_URL_HERE"; 
-// ถ้ายังไม่มีรูป ให้ใช้ placeholder นี้ไปก่อนได้ครับ:
-// const FRAME_COVER_IMAGE_URL = "https://placehold.co/800x418/7037C2/FFFFFF?text=Monad+Run";
+// URL รูปภาพหน้าปก Frame (จาก Imageshack ที่คุณให้มา)
+const FRAME_COVER_IMAGE_URL = "https://imagizer.imageshack.com/img924/162/3FDjSU.png"; 
 
 
 const generateFrameHtml = (): string => {
-  if (FRAME_COVER_IMAGE_URL === "YOUR_FRAME_COVER_IMAGE_URL_HERE") {
-    console.error("ERROR: FRAME_COVER_IMAGE_URL has not been set in src/app/api/frame/route.ts. Using default GAME_PAGE_URL.");
-    return `<!DOCTYPE html><html><head><title>Configuration Error</title><meta property="fc:frame" content="vNext" /><meta property="fc:frame:image" content="https://placehold.co/800x418/orange/white?text=Error:+Frame+Image+URL+Needed" /><meta property="fc:frame:button:1" content="Play Game" /><meta property="fc:frame:button:1:action" content="link" /><meta property="fc:frame:button:1:target" content="${GAME_PAGE_URL}" /></head><body>Configuration Error: Please set the FRAME_COVER_IMAGE_URL in the API route.</body></html>`;
+  // ไม่จำเป็นต้องเช็ค YOUR_FRAME_COVER_IMAGE_URL_HERE อีกต่อไป เพราะเราใส่ URL จริงแล้ว
+  // แต่ GAME_PAGE_URL ยังควรตรวจสอบ (เผื่อมีการเปลี่ยนแปลงในอนาคต)
+  if (GAME_PAGE_URL === "YOUR_DEPLOYED_GAME_PAGE_URL_HERE") { // ตรวจสอบเผื่อกรณีนี้ยังไม่ได้ถูกแก้ไข
+    console.error("ERROR: GAME_PAGE_URL has not been set correctly in src/app/api/frame/route.ts.");
+    return `<!DOCTYPE html><html><head><title>Configuration Error</title><meta property="fc:frame" content="vNext" /><meta property="fc:frame:image" content="https://placehold.co/800x418/orange/white?text=Error:+Game+URL+Needed" /><meta property="fc:frame:button:1" content="Error" /></head><body>Configuration Error: Please set the GAME_PAGE_URL.</body></html>`;
   }
+  
   return `
     <!DOCTYPE html><html><head>
       <meta charSet="utf-8" />
