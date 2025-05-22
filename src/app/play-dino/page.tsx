@@ -101,8 +101,9 @@ export default function DinoGamePage() {
       try {
         const lastFourHex = userAddress.slice(-4);
         fidToClaim.current = parseInt(lastFourHex, 16) || 12345;
-      } catch (_e) { 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars // <--- เพิ่มตรงนี้
+      catch (_e) { 
         fidToClaim.current = 12345; 
       }
     } else {
