@@ -14,7 +14,7 @@ if (contractAddress === "0x0000000000000000000000000000000000000000") {
 }
 if (contractAbi.length === 0 && DinoRewardContractArtifact && DinoRewardContractArtifact.abi) {
     console.warn("src/lib/contracts/index.ts: DinoRewardContract ABI could not be loaded correctly or is empty.");
-} else if (!DinoRewardContractArtifact || !DINO_REWARD_CONTRACT_ABI.abi) { // <<< *** ผมขอแก้ไขเล็กน้อยตรงนี้นะครับ จากโค้ดที่คุณส่งมาล่าสุด มันควรจะเป็น !DinoRewardContractArtifact.abi ***
+} else if (!DinoRewardContractArtifact || !DinoRewardContractArtifact.abi) {
     console.warn("src/lib/contracts/index.ts: DinoRewardContractArtifact or its ABI property is missing.");
 }
 
